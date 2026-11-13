@@ -1,5 +1,5 @@
 application:
-  subdomain: qbittorrentee-multi
+  subdomain: qbittorrentee
   background_task: true
   multi_instance: true
   file_handler:
