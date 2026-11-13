@@ -1,0 +1,22 @@
+package: community.lazycat.app.qbittorrentee
+version: 5.2.410
+name: qBittorrent Enhanced Edition
+description: "qBittorrent 社区增强版，多实例，每位用户拥有独立实例"
+min_os_version: 1.5.0
+homepage: https://github.com/dockers-x/Docker-qBittorrent-Enhanced-Edition
+author: czyt
+license: MIT
+locales:
+  zh:
+    name: "qBittorrent增强版"
+    description: "qBittorrent 社区增强版，多实例，每位用户拥有独立实例，自动封禁迅雷/QQ/百度等客户端"
+  en:
+    name: "qBittorrent Enhanced Edition"
+    description: "Multi-instance qBittorrent Enhanced Edition with a separate instance per user and auto-ban for Thunder/QQ/Baidu clients"
+
+permissions:
+  required:
+    - net.internet
+    - document.read
+    - document.private
+    - document.write

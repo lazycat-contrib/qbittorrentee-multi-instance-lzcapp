@@ -1,0 +1,61 @@
+application:
+  subdomain: qbittorrentee-multi
+  background_task: true
+  multi_instance: true
+  file_handler:
+    mime:
+      - application/x-magnet
+      - application/x-bittorrent
+    actions:
+      open: /open?file=%u
+  upstreams:
+    - location: /
+      backend: http://qbittorrentee:8080/
+{{ if .U.enable_auto_login }}
+  injects:
+    - id: login-autofill
+      on: browser
+      when:
+        - /
+      do:
+        - src: builtin://simple-inject-password
+          params:
+            user: >-
+              {{ default "admin" .U.login_user }}
+            password: >-
+              {{ default "adminadmin" .U.login_password }}
+            userSelector: "#username"
+            passwordSelector: "#password"
+            submitSelector: "#loginButton"
+            autoSubmit: true
+{{ else }}
+  public_path:
+    - /
+{{ end }}
+  ingress:
+    - protocol: tcp
+      port: 6881
+      service: qbittorrentee
+    - protocol: udp
+      port: 6881
+      service: qbittorrentee
+services:
+  qbittorrentee:
+    # upstream: czyt/qbittorrentee:5.2.4.10-r1
+    image: registry.lazycat.cloud/czyt/czyt/qbittorrentee:e82730ede1aa53cf
+    environment:
+      - TZ=Asia/Shanghai
+      - WEBUIPORT=8080
+      - RUN_AS_ROOT=true
+      - ENABLE_CONFIG_PERM_FIX=false
+      - ENABLE_DOWNLOADS_PERM_FIX=false
+      - >-
+        WEBUI_USERNAME={{ default "admin" .U.login_user }}
+      - >-
+        WEBUI_PASSWORD={{ default "adminadmin" .U.login_password }}
+    binds:
+      - /lzcapp/var/config:/config
+{{ with (default "Downloads" .U.download_dir_name) }}
+      - >-
+        {{ if or (eq . ".") (eq . "..") (contains "/" .) (contains "\\" .) (contains ":" .) (contains "$" .) (contains "\n" .) (contains "\r" .) }}{{ fail "download_dir_name must be a single directory name, not a path" }}{{ end }}/lzcapp/documents/{{ $.S.DeployUID }}/{{ . }}:/downloads
+{{ end }}
