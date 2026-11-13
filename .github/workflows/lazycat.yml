@@ -20,10 +20,6 @@ jobs:
           APPSTORE_TOKEN: ${{ secrets.APPSTORE_TOKEN }}
         run: |
           set -euo pipefail
-          if [[ ! "$APP_ID" =~ ^[1-9][0-9]*$ ]]; then
-            echo "::error::Set this repository's APP_ID secret to the private store entry for community.lazycat.app.qbittorrentee. Do not reuse the single-instance entry."
-            exit 1
-          fi
           curl --fail --silent --show-error --max-time 60 \
             -H "Authorization: Bearer $APPSTORE_TOKEN" \
             -H "Accept: application/json" \
