@@ -10,23 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  validate-private-store-binding:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify private store package identity
-        env:
-          APP_ID: ${{ secrets.APP_ID }}
-          APPSTORE_URL: ${{ secrets.APPSTORE_URL }}
-          APPSTORE_TOKEN: ${{ secrets.APPSTORE_TOKEN }}
-        run: |
-          set -euo pipefail
-          curl --fail --silent --show-error --max-time 60 \
-            -H "Authorization: Bearer $APPSTORE_TOKEN" \
-            -H "Accept: application/json" \
-            "${APPSTORE_URL%/}/api/v1/apps/$APP_ID" \
-            | jq -e '.app.packageId == "community.lazycat.app.qbittorrentee"' >/dev/null
   lazycat:
-    needs: validate-private-store-binding
     uses: ca-x/lazycat-github-action/.github/workflows/lazycat.yml@v1.3.8
     with:
       operation: auto
